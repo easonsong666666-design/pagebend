@@ -15,7 +15,7 @@ After those steps:
 
 - name: Keep the visual evidence
   if: always()
-  uses: actions/upload-artifact@v4
+  uses: actions/upload-artifact@v7.0.2
   with:
     name: pagebend-checkout
     path: artifacts/pagebend/

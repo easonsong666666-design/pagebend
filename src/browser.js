@@ -1,8 +1,10 @@
 import { chromium } from 'playwright';
+import { readFile } from 'node:fs/promises';
 import { DEFAULT_PROFILES, getProfile, applyProfile } from './profiles.js';
 import { detect, compareFindings } from './detect.js';
 
 const MAX_HEIGHT = 12000;
+const { version } = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const numeric = (value, fallback, min, max, name) => {
   const number = value ?? fallback;
   if (!Number.isFinite(number) || number < min || number > max || !Number.isInteger(number)) throw new Error(`${name} must be an integer from ${min} to ${max}.`);
@@ -71,7 +73,7 @@ export async function scan(options = {}) {
   if (options.scope !== undefined && typeof options.scope !== 'string') throw new Error('scope must be a CSS selector.');
   const started = Date.now();
   const report = {
-    schemaVersion: 1, version: '0.1.0', title: 'PageBend report', url: redactUrl(target.href),
+    schemaVersion: 1, version, title: 'PageBend report', url: redactUrl(target.href),
     createdAt: new Date().toISOString(), durationMs: 0,
     settings: { width, height, profiles: [...profiles], scope: options.scope ?? null },
     summary: { cases: 0, newFindings: 0, existingFindings: 0, reviewCases: 0 },

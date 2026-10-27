@@ -7,7 +7,7 @@ After those steps:
 ```yaml
 - name: Install PageBend
   run: |
-    npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.0/pagebend-0.1.0.tgz
+    npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
     pagebend install-browser
 
 - name: Stress the checkout page

@@ -26,6 +26,7 @@ const help = `
   --scope <selector>          Only mutate and inspect this part of the page
   --ignore <selector>         Ignore matching subtrees (repeatable)
   --storage-state <file>      Playwright auth state, read locally only
+  --setup                    Install matching Chromium, then run this scan/demo
   --channel <name>            Use an installed browser, e.g. chrome or msedge
   --browser-path <file>       Explicit Chromium executable path
   --fail-on <new|any|none>     CI exit 1 for candidates (default: none)
@@ -36,6 +37,7 @@ const help = `
   --version, -v              Show version
 
   Examples:
+    pagebend demo --setup --open
     pagebend demo --open
     pagebend http://localhost:3000 --profiles long-text,text-zoom,narrow
     pagebend http://localhost:3000 --ignore '[data-pagebend-ignore]' --fail-on new
@@ -59,7 +61,7 @@ export function parseOptions(args) {
     wait: { type: 'string' }, timeout: { type: 'string' }, 'wait-for': { type: 'string' }, scope: { type: 'string' },
     ignore: { type: 'string', multiple: true }, 'storage-state': { type: 'string' }, channel: { type: 'string' },
     'browser-path': { type: 'string' }, 'fail-on': { type: 'string' }, force: { type: 'boolean' },
-    open: { type: 'boolean' }, quiet: { type: 'boolean' }, fixed: { type: 'boolean' }
+    open: { type: 'boolean' }, quiet: { type: 'boolean' }, fixed: { type: 'boolean' }, setup: { type: 'boolean' }
   }});
   if (values.help || args.length === 0) return { command: 'help' };
   if (values.version) return { command: 'version' };
@@ -73,7 +75,13 @@ export function parseOptions(args) {
     command = 'scan';
     if (positionals.length > 1) throw new Error('Only one URL can be scanned at a time.');
   } else if (positionals.length > 1) throw new Error(`Unexpected argument: ${positionals[1]}`);
-  if (command === 'install-browser') return { command };
+  if (values.setup && (values.channel !== undefined || values['browser-path'] !== undefined)) {
+    throw new Error('--setup installs the matching Chromium browser and cannot be combined with --channel or --browser-path. Choose one browser setup method.');
+  }
+  if (command === 'install-browser') {
+    if (values.setup) throw new Error('--setup is only for scan/demo commands. "install-browser" already installs Chromium.');
+    return { command };
+  }
   if (command === 'scan') {
     let parsed;
     try { parsed = new URL(url); } catch { throw new Error('Provide an http:// or https:// URL, or use "pagebend demo".'); }
@@ -87,7 +95,7 @@ export function parseOptions(args) {
   const failOn = values['fail-on'] || 'none';
   if (!['new', 'any', 'none'].includes(failOn)) throw new Error('--fail-on must be new, any, or none.');
   return { command, url, fixed: !!values.fixed, output: resolve(values.out || 'pagebend-report'), force: !!values.force,
-    open: !!values.open, quiet: !!values.quiet, failOn, profiles,
+    open: !!values.open, quiet: !!values.quiet, setup: !!values.setup, failOn, profiles,
     width: numberOption(values.width, 1280, 'width', 240, 3840),
     height: numberOption(values.height, 900, 'height', 240, 2160),
     wait: numberOption(values.wait, 300, 'wait', 0, 30000),
@@ -139,23 +147,35 @@ function openFile(file) {
   });
 }
 
-async function installBrowser() {
+async function installBrowser({ quiet = false } = {}) {
   const require = createRequire(import.meta.url);
   const cli = join(dirname(require.resolve('playwright/package.json')), 'cli.js');
   return await new Promise((resolvePromise, reject) => {
-    const child = spawn(process.execPath, [cli, 'install', 'chromium', '--no-shell'], { stdio: 'inherit' });
+    const child = spawn(process.execPath, [cli, 'install', 'chromium', '--no-shell'], {
+      stdio: quiet ? ['ignore', 'ignore', 'inherit'] : 'inherit'
+    });
     child.once('error', reject); child.once('exit', code => resolvePromise(code === 0 ? 0 : 2));
   });
 }
 
-export async function main(args, io = { out: console.log, error: console.error }) {
+export async function main(args, io = { out: console.log, error: console.error }, installer = installBrowser) {
   let demo;
+  let options;
   try {
-    const options = parseOptions(args);
+    options = parseOptions(args);
     if (options.command === 'help') { io.out(help); return 0; }
     if (options.command === 'version') { io.out(pkg.version); return 0; }
-    if (options.command === 'install-browser') return await installBrowser();
+    if (options.command === 'install-browser') return await installer();
     await checkOutput(options.output, options.force);
+    if (options.setup) {
+      if (!options.quiet) io.out(`\n  Setting up the matching Chromium browser for PageBend ${pkg.version}. Cached browser files are reused.\n`);
+      try {
+        if (await installer({ quiet: options.quiet }) !== 0) throw new Error('The browser installer exited unsuccessfully.');
+      } catch (error) {
+        throw new Error(`Chromium setup failed: ${error?.message || String(error)} No report was written. Fix the installation error and re-run the same command with --setup.`);
+      }
+      if (!options.quiet) io.out('  Chromium is ready. Starting the scan.');
+    }
     if (options.command === 'demo') {
       demo = await startDemo(options.fixed);
       options.url = demo.url;
@@ -187,12 +207,21 @@ export async function main(args, io = { out: console.log, error: console.error }
     return options.failOn !== 'none' && count > 0 ? 1 : 0;
   } catch (error) {
     let message = error?.message || String(error);
+    if (!message.startsWith('Chromium setup failed:') && /Executable doesn't exist|executable.*(?:does not exist|not found)|distribution .+ is not found|browser (?:was )?not found/i.test(message)) {
+      if (options?.channel || options?.executablePath) {
+        io.error('PageBend: The requested browser executable was not found.');
+        io.error('Check --channel/--browser-path, or remove them and re-run the same command with --setup to install matching Chromium. Use --channel chrome only if Chrome is installed.');
+      } else {
+        io.error(`PageBend: Chromium is not installed for PageBend ${pkg.version}.`);
+        io.error('Re-run the same command with --setup to install the matching browser, or add --channel chrome to use installed Chrome.');
+      }
+      return 2;
+    }
     // Do not echo authenticated URL queries in navigation error output.
     message = message.replace(/https?:\/\/[^\s"'<>]+/g, value => {
       try { const url = new URL(value); url.username = ''; url.password = ''; url.search = ''; url.hash = ''; return url.href; } catch { return '[URL]'; }
     });
     io.error(`PageBend: ${message}`);
-    if (/Executable doesn't exist|browserType\.launch|browser.*not found/i.test(message)) io.error('Run "pagebend install-browser" once, or use "--channel chrome" for an installed Chrome.');
     return 2;
   } finally { if (demo) await demo.close(); }
 }

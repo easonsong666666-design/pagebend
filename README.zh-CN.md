@@ -14,18 +14,28 @@
 
 PageBend 用 Chromium 打开你的页面，每个场景从独立的浏览器环境开始，只在浏览器中临时改变内容。它保留原始和受压截图，测量布局变化，区分原本存在的问题和新增候选，并提供元素选择器、像素测量与可复制的修复提示。
 
+想看完整修复过程，可以阅读[一个按钮如何被裁切、修改 CSS 后怎样复查](docs/repair-walkthrough.md)（英文）。
+
 ## 开始使用
 
-需要 Node.js 20 或以上。首次安装浏览器会下载 Chromium。当前版本从 GitHub 发布包安装，尚未发布到 npm registry。
+需要 **Node.js 20 或以上**。用一条命令试跑内置页面，无需全局安装，也不需要 Git：
 
 ```sh
-npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.0/pagebend-0.1.0.tgz
-pagebend install-browser
-pagebend demo --open
-pagebend http://localhost:3000 --open
+npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz demo --setup --open
 ```
 
-已有 Chrome 时，可以跳过浏览器下载，改用 `pagebend demo --channel chrome --open`。
+`--setup` 会在需要时安装匹配的 Chromium，然后生成报告并打开；首次下载可能需要几分钟。已有 Chrome 时，把 `--setup` 换成 `--channel chrome` 即可跳过下载。扫描在本机运行，不需要账户或 API key，没有遥测，也不上传页面。
+
+把 `demo` 换成 `http://localhost:3000` 就能检查自己的应用，加上 `--out my-app-report` 可以与演示报告分开保存。当前版本从 GitHub 发布包安装，尚未发布到 npm registry。
+
+经常使用时，可以安装一次：
+
+```sh
+npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+pagebend http://localhost:3000 --setup --out my-app-report --open
+```
+
+浏览器装好后可以省略 `--setup`。也可以继续用 `pagebend install-browser` 单独安装浏览器，适合 CI 等需要分步执行的环境。
 
 也可以克隆仓库：
 

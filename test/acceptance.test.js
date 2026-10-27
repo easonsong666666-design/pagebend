@@ -9,6 +9,7 @@ import { chromium } from 'playwright';
 import { scan } from '../src/browser.js';
 
 const fixtureDirectory = fileURLToPath(new URL('./fixtures/', import.meta.url));
+const { version: packageVersion } = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
 const browserOptions = { channel: process.env.PAGEBEND_TEST_CHANNEL || 'chromium' };
 let server;
 let baseUrl;
@@ -57,6 +58,7 @@ test('redirects are visible so a login page cannot silently stand in for the tar
 
 function succeeded(report) {
   assert.equal(report.schemaVersion, 1);
+  assert.equal(report.version, packageVersion);
   for (const scenario of report.cases) {
     assert.equal(scenario.error, undefined, scenario.error);
     assert.match(scenario.before.image, /^data:image\/png;base64,/);

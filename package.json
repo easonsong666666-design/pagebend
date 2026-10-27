@@ -1,11 +1,22 @@
 {
   "name": "pagebend",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Stress-test real web pages with long text, big fonts, narrow screens and missing images. Get an offline visual report.",
   "type": "module",
-  "bin": { "pagebend": "bin/pagebend.js" },
-  "exports": { ".": "./src/index.js", "./profiles": "./src/profiles.js" },
-  "files": ["bin", "src", "demo", "README.md", "LICENSE"],
+  "bin": {
+    "pagebend": "bin/pagebend.js"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./profiles": "./src/profiles.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "demo",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "node --test --test-concurrency=1",
     "demo": "node bin/pagebend.js demo --out pagebend-report --force",
@@ -14,12 +25,30 @@
     "docs:demo": "node scripts/build-demo.mjs",
     "install:browser": "playwright install chromium --no-shell"
   },
-  "engines": { "node": ">=20" },
-  "dependencies": { "playwright": "1.64.1" },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "1.64.1"
+  },
   "license": "MIT",
   "author": "easonsong666666-design",
-  "repository": { "type": "git", "url": "git+https://github.com/easonsong666666-design/pagebend.git" },
-  "bugs": { "url": "https://github.com/easonsong666666-design/pagebend/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/easonsong666666-design/pagebend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/easonsong666666-design/pagebend/issues"
+  },
   "homepage": "https://easonsong666666-design.github.io/pagebend/",
-  "keywords": ["playwright", "ui-testing", "visual-testing", "responsive", "pseudolocalization", "developer-tools", "cli", "layout"]
+  "keywords": [
+    "playwright",
+    "ui-testing",
+    "visual-testing",
+    "responsive",
+    "pseudolocalization",
+    "developer-tools",
+    "cli",
+    "layout"
+  ]
 }

@@ -19,23 +19,29 @@ A neat sample name fits your card. A real customer's name does not. A translated
 
 PageBend opens your page in Chromium, applies one temporary stress condition at a time, and records the result. It compares geometry **before and after** so you can distinguish new candidates from problems that already existed. Each candidate includes a CSS selector, measured overflow, a screenshot location and a copyable repair prompt.
 
+See [one clipped button, the CSS repair, and the rescan](docs/repair-walkthrough.md) for a concrete walkthrough.
+
 ## Try it
 
-Requires **Node.js 20+**. The first browser install downloads Chromium. No account, API key, telemetry or cloud service is needed to run a scan.
+Requires **Node.js 20+**. Try the included page with one command — no global install or Git required:
 
 ```sh
-# Install this version directly from GitHub. It is not yet on the npm registry.
-npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.0/pagebend-0.1.0.tgz
-pagebend install-browser
-
-# Scan the included deliberately fragile page through the real engine.
-pagebend demo --open
-
-# Then scan your own running app.
-pagebend http://localhost:3000 --open
+npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz demo --setup --open
 ```
 
-Already have Chrome? Skip the browser download and use `pagebend demo --channel chrome --open`.
+`--setup` installs the matching Chromium browser if needed, then runs the scan. The first download can take a few minutes. Already have Chrome? Replace `--setup` with `--channel chrome` to skip it. The report opens in your browser; PageBend runs locally. No account, API key, telemetry or cloud service is needed to run a scan.
+
+Replace `demo` with `http://localhost:3000` to scan your own running app; add `--out my-app-report` to keep it separate from the demo. The package currently comes from a GitHub Release, not the npm registry.
+
+For regular use, install once:
+
+```sh
+npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+
+pagebend http://localhost:3000 --setup --out my-app-report --open
+```
+
+After the browser is installed, you can omit `--setup`. `pagebend install-browser` remains available as a separate setup step, including for CI.
 
 Prefer a local checkout?
 

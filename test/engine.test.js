@@ -80,6 +80,55 @@ test('text clipping distinguishes hidden overflow from intentional ellipsis and 
   });
 });
 
+test('fully clipped Bootstrap and Tailwind screen-reader labels and their descendants are not visible candidates', async () => {
+  await withPage(`<style>
+    .label{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;white-space:nowrap;border:0}
+    .legacy{clip:rect(0,0,0,0)}
+    .modern{clip-path:inset(50%)}
+    .nested{display:inline-block;width:30px;height:8px;overflow:hidden}
+  </style>
+  <span id="bootstrap-label" class="label legacy">Toggle theme</span>
+  <span id="tailwind-label" class="label modern">Open navigation</span>
+  <span id="legacy-parent" class="label legacy"><span id="legacy-child" class="nested">Nested accessibility label</span></span>
+  <span id="modern-parent" class="label modern"><span id="modern-child" class="nested">Nested accessibility label</span></span>
+  <p>Visible page content</p>`, async (page) => {
+    const geometry = await page.locator('#bootstrap-label').evaluate(element => ({
+      width: element.clientWidth, contentWidth: element.scrollWidth, clip: getComputedStyle(element).clip
+    }));
+    assert.equal(geometry.width, 1);
+    assert.ok(geometry.contentWidth > 10, 'fixture must reproduce real hidden-label overflow');
+    assert.equal(geometry.clip, 'rect(0px, 0px, 0px, 0px)');
+    assert.deepEqual((await detect(page)).findings, []);
+    await applyProfile(page, 'long-text');
+    assert.deepEqual((await detect(page)).findings, [], 'long accessibility labels remain deliberately unpainted');
+    await applyProfile(page, 'text-zoom');
+    assert.deepEqual((await detect(page)).findings, [], 'ancestor clipping must also exclude nested text after font zoom');
+  });
+});
+
+test('zero-area clipping is based on geometry rather than class names or a particular four-zero spelling', async () => {
+  await withPage(`<style>.sample{position:absolute;width:40px;height:16px;overflow:hidden;white-space:nowrap}</style>
+    <span id="empty-height" class="sample" style="clip:rect(4px,30px,4px,2px)">A deliberately unpainted label</span>
+    <span id="empty-width" class="sample" style="clip-path:inset(0% 50%)">Another unpainted label</span>
+    <span id="empty-four-offsets" class="sample" style="clip-path:inset(25% 0% 75% 0%)">Another unpainted label</span>`, async (page) => {
+    assert.deepEqual((await detect(page)).findings, []);
+  });
+});
+
+test('tiny accidental clipping and partly visible clip shapes still produce candidates', async () => {
+  await withPage(`<style>.sample{display:block;width:60px;height:18px;overflow:hidden;white-space:nowrap}</style>
+    <span id="one-pixel" class="sample" style="width:1px;height:1px">Accidentally clipped visible text</span>
+    <span id="partial-legacy" class="sample" style="position:absolute;clip:rect(0,30px,12px,0)">Partly visible legacy clipping</span>
+    <span id="partial-inset" class="sample" style="clip-path:inset(0% 20%)">Partly visible inset clipping</span>
+    <span id="almost-empty" class="sample" style="clip-path:inset(49.9%)">A narrow but nonzero painted area</span>
+    <span id="static-legacy" class="sample" style="clip:rect(0,0,0,0)">Legacy clip has no effect without positioning</span>
+    <span id="other-shape" class="sample" style="clip-path:circle(50%)">Other paths are not assumed invisible</span>
+    <span style="display:contents;clip-path:inset(50%)"><span id="contents-child" class="sample">A boxless ancestor cannot clip this content</span></span>`, async (page) => {
+    const clipped = (await detect(page)).findings.filter(item => item.kind === 'text-clipping').map(item => item.selector).sort();
+    assert.deepEqual(clipped, ['#almost-empty', '#contents-child', '#one-pixel', '#other-shape', '#partial-inset', '#partial-legacy', '#static-legacy']);
+  });
+});
+
 test('DOM and finding limits are visible in warnings', async () => {
   const rows = Array.from({ length: 30 }, (_, i) => `<p id="row${i}" style="width:10px;overflow:hidden;white-space:nowrap">Long content</p>`).join('');
   await withPage(rows, async (page) => {
@@ -134,6 +183,12 @@ test('tall pages produce bounded screenshots and an explicit truncation warning'
   assert.equal(report.cases[0].error, undefined);
   assert.equal(report.cases[0].before.height, 12000);
   assert.equal(report.cases[0].after.height, 12000);
+  for (const snapshot of [report.cases[0].before, report.cases[0].after]) {
+    const png = Buffer.from(snapshot.image.split(',')[1], 'base64');
+    assert.equal(png.readUInt32BE(16), snapshot.width, 'PNG width must match its reported CSS width');
+    assert.equal(png.readUInt32BE(20), 12000, 'the image itself must reach the documented 12000px cap');
+    assert.equal(png.readUInt32BE(20), snapshot.height);
+  }
   assert.ok(report.warnings.some((warning) => warning.includes('Screenshot clipped to the first 12000px')));
 });
 

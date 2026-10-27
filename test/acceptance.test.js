@@ -22,6 +22,11 @@ before(async () => {
   ])));
   server = createServer((request, response) => {
     const path = new URL(request.url, 'http://fixture.local').pathname;
+    if (path === '/below-fold') {
+      response.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      response.end('<!doctype html><style>body{margin:0}main{height:1800px;background:#fff;position:relative}footer{position:absolute;bottom:0;width:100%;height:100px;background:rgb(60,180,75)}#below-target{position:absolute;top:1500px;left:20px;margin:0;width:90px;height:20px;overflow:hidden;white-space:nowrap;font:16px/20px Arial}</style><main><p id="below-target">Approve</p><footer></footer></main>');
+      return;
+    }
     if (path === '/redirect') { response.writeHead(302, { Location: '/fragile?token=PRIVATE_REDIRECT_TOKEN' }); response.end(); return; }
     if (path === '/authenticated') {
       const authorized = request.headers.cookie?.includes('fixture_session=SYNTHETIC_COOKIE_6241');
@@ -63,8 +68,55 @@ function succeeded(report) {
     assert.equal(scenario.error, undefined, scenario.error);
     assert.match(scenario.before.image, /^data:image\/png;base64,/);
     assert.match(scenario.after.image, /^data:image\/png;base64,/);
+    for (const snapshot of [scenario.before, scenario.after]) {
+      const png = Buffer.from(snapshot.image.split(',')[1], 'base64');
+      assert.equal(png.readUInt32BE(16), snapshot.width, 'PNG width must match report coordinates');
+      assert.equal(png.readUInt32BE(20), snapshot.height, 'PNG height must match report coordinates');
+    }
   }
 }
+
+test('screenshots include content below the viewport with accurate overlay dimensions', async () => {
+  const report = await inspect('below-fold', { profiles: ['long-text'] });
+  succeeded(report);
+  const candidate = report.cases[0].findings.find(item => item.selector === '#below-target');
+  assert.ok(candidate && candidate.status === 'new');
+  assert.equal(candidate.rect.y, 1500);
+  const browser = await chromium.launch({ headless: true, ...browserOptions });
+  try {
+    const page = await browser.newPage();
+    for (const snapshot of [report.cases[0].before, report.cases[0].after]) {
+      assert.equal(snapshot.height, 1800);
+      const pixel = await page.evaluate(async (source) => {
+        const image = new Image();
+        image.src = source;
+        await image.decode();
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = 1;
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, image.naturalHeight - 10, 1, 1, 0, 0, 1, 1);
+        return [...context.getImageData(0, 0, 1, 1).data];
+      }, snapshot.image);
+      assert.deepEqual(pixel, [60, 180, 75, 255], 'footer below the 600px viewport must appear in the PNG');
+    }
+    const { renderReport } = await import('../src/report.js');
+    const file = join(temporary, 'below-fold-report.html');
+    await writeFile(file, renderReport(report));
+    await page.goto(pathToFileURL(file).href);
+    for (const mode of ['split', 'overlay']) {
+      if (mode === 'overlay') await page.getByRole('button', { name: 'Overlay', exact: true }).click();
+      await page.getByRole('button', { name: /^Locate candidate 1:/ }).click();
+      const alignment = await page.locator('.finding-mark.selected').evaluate(mark => {
+        const image = mark.parentElement.querySelector('img');
+        const imageBox = image.getBoundingClientRect();
+        const markBox = mark.getBoundingClientRect();
+        return { x: markBox.x - imageBox.x, y: markBox.y - imageBox.y, scale: imageBox.width / image.naturalWidth };
+      });
+      assert.ok(Math.abs(alignment.y - candidate.rect.y * alignment.scale) < 1, `${mode} mark must align below the fold`);
+      assert.ok(Math.abs(alignment.x - candidate.rect.x * alignment.scale) < 1, `${mode} mark must align horizontally`);
+    }
+  } finally { await browser.close(); }
+});
 
 test('a clean page breaks under long text; a CSS repair removes the same candidate', async () => {
   fragileReport = await inspect('fragile', { ignore: ['[data-pagebend-ignore]'] });

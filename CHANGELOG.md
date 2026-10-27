@@ -2,6 +2,8 @@
 
 ## 0.1.1
 
+- Capture content below the viewport up to the documented 12,000px limit; screenshot pixels now match the dimensions used for report overlays.
+- Exclude fully clipped screen-reader-only labels from visual clipping candidates.
 - Run a first scan with `--setup`: install the matching Chromium browser when needed and continue directly to the report. Downloads remain opt-in.
 - Give actionable missing-browser instructions for temporary `npx` installs.
 - Read the report version from the installed package so diagnostics identify the actual release.

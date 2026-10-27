@@ -62,6 +62,41 @@ export async function detect(page, { scope, ignore = [], maxElements = 5000, max
       findings.push({ id: `${kind}:${selector}`, kind, selector, message, rect: box(element), excessPx: round(excessPx), status: 'new', hint });
     };
     const excluded = 'script,style,noscript,template,svg,math,[hidden],[aria-hidden="true"],input[type="hidden"]';
+    const hasEmptyClip = (style) => {
+      if (style.display === 'contents') return false; // No principal box to clip.
+      // Screen-reader labels commonly keep a real layout box but paint no pixels.
+      // Only exclude clipping shapes whose empty area can be proved from the
+      // computed style. Small boxes, partial clipping and arbitrary paths remain
+      // inspectable. Legacy clip has no effect on non-positioned elements.
+      if (['absolute', 'fixed'].includes(style.position)) {
+        const rectangle = /^rect\(([^()]*)\)$/.exec(style.clip);
+        if (rectangle) {
+          const edges = rectangle[1].trim().split(/[\s,]+/).map((value) =>
+            /^-?(?:\d+(?:\.\d+)?|\.\d+)px$/.test(value) || /^-?0(?:\.0+)?$/.test(value) ? parseFloat(value) : NaN);
+          if (edges.length === 4) {
+            const [top, right, bottom, left] = edges;
+            if ((Number.isFinite(top) && Number.isFinite(bottom) && bottom <= top) ||
+                (Number.isFinite(left) && Number.isFinite(right) && right <= left)) return true;
+          }
+        }
+      }
+      // Percentage-only inset offsets (plus zero lengths) need no reference-box
+      // approximation: opposing offsets totaling 100% leave an empty axis.
+      // Do not infer visibility for calc(), rounded shapes or other clip paths.
+      const inset = /^inset\(([^()]*)\)$/.exec(style.clipPath);
+      if (inset) {
+        const offsets = inset[1].trim().split(/\s+/).map((value) => {
+          if (/^-?(?:\d+(?:\.\d+)?|\.\d+)%$/.test(value)) return parseFloat(value);
+          if (/^-?0(?:\.0+)?(?:px)?$/.test(value)) return 0;
+          return NaN;
+        });
+        if (offsets.length >= 1 && offsets.length <= 4 && offsets.every(Number.isFinite)) {
+          const [top, right = top, bottom = top, left = right] = offsets;
+          if (top + bottom >= 100 || left + right >= 100) return true;
+        }
+      }
+      return false;
+    };
     const isVisible = (element) => {
       if (element.closest(excluded) || ignore.some((selector) => element.closest(selector))) return false;
       const rect = element.getBoundingClientRect();
@@ -69,6 +104,7 @@ export async function detect(page, { scope, ignore = [], maxElements = 5000, max
       for (let parent = element; parent; parent = parent.parentElement) {
         const style = getComputedStyle(parent);
         if (style.display === 'none' || style.visibility === 'hidden' || style.visibility === 'collapse' || Number(style.opacity) === 0 || style.transform !== 'none') return false;
+        if (hasEmptyClip(style)) return false;
       }
       return true;
     };

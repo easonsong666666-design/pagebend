@@ -48,7 +48,7 @@ async function snapshot(page, options, warnings, caseId) {
   if (dimensions.height > MAX_HEIGHT) warnings.push(`${caseId}: Screenshot clipped to the first ${MAX_HEIGHT}px of a ${dimensions.height}px page; findings below the image may still be listed.`);
   await page.evaluate(() => scrollTo(0, 0));
   const buffer = await page.screenshot({
-    type: 'png', animations: 'disabled', caret: 'hide', scale: 'css',
+    type: 'png', animations: 'disabled', caret: 'hide', scale: 'css', fullPage: true,
     clip: { x: 0, y: 0, width: dimensions.width, height },
     timeout: options.timeout,
   });

@@ -1,0 +1,9 @@
+test/
+docs/
+.github/
+pagebend-report/
+pagebend-fixed-report/
+node_modules/
+*.tgz
+.env*
+storage-state*.json

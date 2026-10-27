@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intentional overflow fixture</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 32px; font: 16px/1.5 Arial, sans-serif; color: #222; background: #fff; }
+  main { width: min(640px, 100%); }
+  .scroll { width: 160px; overflow-x: auto; white-space: nowrap; }
+  .ellipsis { width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .clamp { width: 160px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
+<main>
+  <div class="scroll" id="scroll"><span>January February March April May June July August September</span></div>
+  <div class="ellipsis" id="ellipsis">A deliberately truncated project title in a compact navigation menu</div>
+  <div class="clamp" id="clamp">This descriptive paragraph is deliberately limited to two visible lines because a separate detail page contains the whole description.</div>
+</main>
+</html>

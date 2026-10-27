@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Acceptance fixture</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 32px; font: 16px/1.5 Arial, sans-serif; color: #222; background: #fff; }
+  main { width: min(640px, 100%); }
+  h1 { font-size: 24px; line-height: 1.2; }
+  .card { margin-top: 16px; padding: 20px; border: 1px solid #ccc; }
+  #target, #nested-target { width: 170px; height: 24px; line-height: 24px; overflow: hidden; white-space: nowrap; }
+  #ignored { width: 170px; height: 24px; line-height: 24px; overflow: hidden; white-space: nowrap; }
+</style>
+<main>
+  <h1>Order approval</h1>
+  <section class="card" id="scope">
+    <div id="target">Approve purchase</div>
+    <div id="nested-target"><span>Approve purchase</span></div>
+  </section>
+  <section class="card" data-pagebend-ignore><div id="ignored">Approve purchase</div></section>
+</main>
+</html>

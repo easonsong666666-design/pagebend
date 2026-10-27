@@ -1,0 +1,12 @@
+node_modules/
+pagebend-report/
+pagebend-fixed-report/
+*.tgz
+*.log
+.DS_Store
+.env
+.env.*
+storage-state*.json
+playwright/.auth/
+coverage/
+output/

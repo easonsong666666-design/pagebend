@@ -1,0 +1,54 @@
+{
+  "version": "0.1.0",
+  "generatedAt": "2026-10-27T03:05:04.933Z",
+  "browser": "Playwright Chromium",
+  "demo": {
+    "synthetic": true,
+    "fixed": true
+  },
+  "summary": {
+    "cases": 6,
+    "newFindings": 0,
+    "existingFindings": 0,
+    "reviewCases": 2
+  },
+  "durationMs": 5965,
+  "scenarios": [
+    {
+      "id": "long-text",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    },
+    {
+      "id": "unbroken",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    },
+    {
+      "id": "text-zoom",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    },
+    {
+      "id": "rtl",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    },
+    {
+      "id": "missing-images",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    },
+    {
+      "id": "narrow",
+      "baselineCandidates": 0,
+      "candidates": 0,
+      "error": null
+    }
+  ]
+}

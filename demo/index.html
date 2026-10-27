@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Acre — PageBend fragile demo</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #eeede6;
+        color: #253128;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      a {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .demo-ribbon {
+        background: #273b30;
+        color: #d7e1d6;
+        text-align: center;
+        padding: 9px 16px;
+        font-size: 10px;
+        letter-spacing: 0.8px;
+      }
+      .demo-ribbon strong {
+        color: #e9b08b;
+        font-weight: 500;
+      }
+      .app {
+        width: 1120px;
+        margin: 32px auto;
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr);
+        border: 1px solid #d9dcd1;
+        border-radius: 15px;
+        background: #fafbf6;
+        box-shadow: 0 12px 60px #2d392214;
+        overflow: hidden;
+      }
+      .rail {
+        padding: 28px 20px;
+        background: #f0f2e9;
+        border-right: 1px solid #e0e4d6;
+        display: flex;
+        flex-direction: column;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        letter-spacing: -0.8px;
+        font-size: 22px;
+      }
+      .logo-mark {
+        font-size: 24px;
+        color: #c8754c;
+      }
+      .workspace {
+        margin-top: 35px;
+        padding: 11px 8px;
+        border: 1px solid #d6decd;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #f9faf5;
+      }
+      .workspace-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 5px;
+        background: #e3be98;
+        color: #6a4c30;
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        flex-shrink: 0;
+      }
+      .workspace-name {
+        display: block;
+        width: 102px;
+        height: 17px;
+        line-height: 17px;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .nav-label {
+        color: #a0a991;
+        font-size: 8px;
+        letter-spacing: 1.5px;
+        margin: 29px 10px 11px;
+      }
+      .nav-item {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: #7a856e;
+        padding: 11px 10px;
+        margin-bottom: 5px;
+        font-size: 11px;
+        border-radius: 6px;
+      }
+      .nav-item.active {
+        background: #dfe5d4;
+        color: #34492d;
+        font-weight: 600;
+      }
+      .nav-icon {
+        width: 14px;
+        color: #849475;
+        font-size: 13px;
+      }
+      .rail-help {
+        margin-top: auto;
+        padding: 24px 8px 0;
+        color: #909a85;
+        font-size: 10px;
+        line-height: 1.7;
+      }
+      .main {
+        padding: 30px;
+        min-width: 0;
+      }
+      .topline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        font-size: 10px;
+        color: #919a85;
+        margin-bottom: 30px;
+      }
+      .breadcrumbs {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+      }
+      .breadcrumb-current {
+        color: #6e7d5e;
+      }
+      .avatar {
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        background: #ddc8ad;
+        display: grid;
+        place-items: center;
+        color: #826146;
+        font-size: 10px;
+        border: 3px solid #fafbf6;
+        box-shadow: 0 0 0 1px #dfe4d4;
+      }
+      .heading {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .heading h1 {
+        font-size: 30px;
+        letter-spacing: -1.4px;
+        font-weight: 500;
+        margin: 0;
+        width: 550px;
+        height: 37px;
+        line-height: 37px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .heading p {
+        font-size: 11px;
+        color: #919a85;
+        line-height: 1.7;
+        margin: 8px 0 0;
+      }
+      .action {
+        height: 36px;
+        width: 132px;
+        background: #2f4734;
+        color: #f5f6ef;
+        border: 1px solid #2f4734;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 10px;
+        overflow: hidden;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .action span {
+        display: block;
+      }
+      .button-icon {
+        font-size: 14px;
+      }
+      .date-line {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 28px 0 14px;
+      }
+      .section-label {
+        font-size: 10px;
+        font-weight: 600;
+      }
+      .date-pill {
+        border: 1px solid #dce1d3;
+        border-radius: 5px;
+        padding: 7px 10px;
+        font-size: 9px;
+        color: #8a957d;
+        display: flex;
+        gap: 8px;
+      }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 13px;
+      }
+      .metric {
+        border: 1px solid #dee3d5;
+        border-radius: 9px;
+        padding: 18px;
+        background: #fffffb;
+      }
+      .metric-label {
+        font-size: 10px;
+        color: #929e85;
+        width: 140px;
+        height: 16px;
+        line-height: 16px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .metric-number {
+        font-size: 31px;
+        letter-spacing: -1.4px;
+        color: #3f5337;
+        margin: 12px 0 12px;
+        width: 190px;
+        height: 36px;
+        line-height: 36px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .metric-bottom {
+        display: flex;
+        gap: 7px;
+        align-items: center;
+        font-size: 8px;
+        color: #a1aa94;
+      }
+      .trend {
+        padding: 3px 5px;
+        border-radius: 4px;
+        background: #e8efdd;
+        color: #6e8853;
+        white-space: nowrap;
+      }
+      .trend.slow {
+        background: #f6eadf;
+        color: #b6875e;
+      }
+      .lower {
+        display: grid;
+        grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+      }
+      .panel {
+        border: 1px solid #dde3d4;
+        border-radius: 9px;
+        padding: 19px;
+        background: #fffffb;
+        min-width: 0;
+      }
+      .panel-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+      }
+      .panel h2 {
+        font-weight: 600;
+        font-size: 11px;
+        margin: 0;
+      }
+      .muted-small {
+        font-size: 8px;
+        color: #a0aa93;
+      }
+      .chart-legend {
+        display: flex;
+        gap: 10px;
+        margin-top: 9px;
+        font-size: 8px;
+        color: #9aa68d;
+      }
+      .legend-dot {
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        background: #c38c67;
+        border-radius: 50%;
+        margin-right: 4px;
+      }
+      .legend-dot.faint {
+        background: #dfe6d2;
+      }
+      .chart {
+        height: 142px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+        padding: 16px 11px 0;
+        border-bottom: 1px solid #e3e7da;
+        background: repeating-linear-gradient(
+          to top,
+          transparent 0 38px,
+          #edf0e5 38px 39px
+        );
+      }
+      .bar-group {
+        display: flex;
+        align-items: flex-end;
+        gap: 4px;
+        flex: 1;
+        height: 100%;
+        justify-content: center;
+      }
+      .bar {
+        width: 11px;
+        border-radius: 3px 3px 0 0;
+        background: #d2ae8a;
+        height: var(--h);
+      }
+      .bar.faint {
+        background: #e1e8d4;
+      }
+      .chart-labels {
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0 2px;
+        color: #a0aa92;
+        font-size: 7px;
+      }
+      .art-card {
+        border: 1px solid #dfd7c4;
+        border-radius: 9px;
+        padding: 15px;
+        background: #f8eddd;
+        min-width: 0;
+      }
+      .art-card img {
+        width: 100%;
+        height: 109px;
+        object-fit: cover;
+        border-radius: 6px;
+        display: block;
+      }
+      .art-card h2 {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: -0.3px;
+        margin: 15px 0 7px;
+      }
+      .art-card p {
+        font-size: 9px;
+        line-height: 1.7;
+        color: #aa9377;
+        margin: 0;
+      }
+      .art-link {
+        margin-top: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 9px;
+        color: #9a6b44;
+      }
+      .customer-panel {
+        margin-top: 19px;
+        padding-bottom: 4px;
+      }
+      .customer-header,
+      .customer-row {
+        display: grid;
+        grid-template-columns: 1.7fr 1fr 0.8fr 0.7fr;
+        gap: 14px;
+        align-items: center;
+      }
+      .customer-header {
+        font-size: 8px;
+        color: #a1ac93;
+        padding: 19px 0 11px;
+        border-bottom: 1px solid #e7ebdf;
+      }
+      .customer-row {
+        padding: 13px 0;
+        border-bottom: 1px solid #edf0e6;
+        font-size: 9px;
+        color: #889778;
+      }
+      .customer-row:last-child {
+        border-bottom: 0;
+      }
+      .person {
+        display: flex;
+        gap: 9px;
+        align-items: center;
+      }
+      .person-avatar {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 8px;
+        background: #edddca;
+        color: #ad8b64;
+        flex-shrink: 0;
+      }
+      .person-avatar.green {
+        background: #e2e9d7;
+        color: #83986c;
+      }
+      .person-avatar.blue {
+        background: #dde6e3;
+        color: #819e93;
+      }
+      .person-name {
+        font-size: 10px;
+        font-weight: 600;
+        color: #677b55;
+        display: block;
+        width: 130px;
+        height: 15px;
+        line-height: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .person-email {
+        font-size: 8px;
+        color: #a8b09d;
+        display: block;
+        margin-top: 3px;
+        width: 150px;
+        height: 12px;
+        line-height: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .status {
+        display: inline-block;
+        justify-self: start;
+        font-size: 8px;
+        color: #849b68;
+        border: 1px solid #dfe7d5;
+        background: #f0f5e8;
+        border-radius: 10px;
+        padding: 3px 7px;
+        white-space: nowrap;
+      }
+      .amount {
+        text-align: right;
+        color: #6f835b;
+        font-size: 10px;
+      }
+      .bottom-note {
+        font-size: 8px;
+        color: #aeb6a3;
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-ribbon">
+      <strong>PAGEBEND DEMO</strong> &nbsp; / &nbsp; Fictional data.
+      Deliberately fragile layout. Stress it, then compare.
+    </div>
+    <div class="app">
+      <aside class="rail">
+        <a class="logo" href="#overview"
+          ><span class="logo-mark" aria-hidden="true">◒</span
+          ><span>acre.</span></a
+        >
+        <div class="workspace">
+          <span class="workspace-icon">AS</span>
+          <div><span class="workspace-name">Acme Studio</span></div>
+        </div>
+        <div class="nav-label">WORKSPACE</div>
+        <nav aria-label="Workspace">
+          <a class="nav-item active" href="#overview"
+            ><span class="nav-icon" aria-hidden="true">◫</span
+            ><span>Overview</span></a
+          ><a class="nav-item" href="#revenue"
+            ><span class="nav-icon" aria-hidden="true">↗</span
+            ><span>Analytics</span></a
+          ><a class="nav-item" href="#customers"
+            ><span class="nav-icon" aria-hidden="true">♧</span
+            ><span>Customers</span></a
+          ><a class="nav-item" href="#customers"
+            ><span class="nav-icon" aria-hidden="true">▤</span
+            ><span>Invoices</span></a
+          ><a class="nav-item" href="#settings"
+            ><span class="nav-icon" aria-hidden="true">⚙</span
+            ><span>Settings</span></a
+          >
+        </nav>
+        <div class="rail-help">
+          A little more clarity.<br />A lot more growth.
+        </div>
+      </aside>
+      <main class="main" id="overview">
+        <div class="topline">
+          <div class="breadcrumbs">
+            <span>Workspace</span><span aria-hidden="true">/</span
+            ><span class="breadcrumb-current">Overview</span>
+          </div>
+          <span class="avatar" aria-label="Maya Chen">MC</span>
+        </div>
+        <header class="heading">
+          <div>
+            <h1>Good morning, Maya.</h1>
+            <p>Here's how your business is growing today.</p>
+          </div>
+          <button class="action" type="button">
+            <span class="button-icon" aria-hidden="true">+</span
+            ><span>Create invoice</span>
+          </button>
+        </header>
+        <div class="date-line">
+          <span class="section-label">Your business at a glance</span
+          ><span class="date-pill"
+            >Last 30 days <span aria-hidden="true">⌄</span></span
+          >
+        </div>
+        <section class="metrics" aria-label="Business metrics">
+          <article class="metric">
+            <div class="metric-label">Total revenue</div>
+            <div class="metric-number">$48,920</div>
+            <div class="metric-bottom">
+              <span class="trend">↗ 12.8%</span><span>vs. last month</span>
+            </div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Active customers</div>
+            <div class="metric-number">1,284</div>
+            <div class="metric-bottom">
+              <span class="trend">↗ 8.2%</span><span>vs. last month</span>
+            </div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Average order</div>
+            <div class="metric-number">$142.60</div>
+            <div class="metric-bottom">
+              <span class="trend slow">↗ 3.1%</span><span>vs. last month</span>
+            </div>
+          </article>
+        </section>
+        <div class="lower">
+          <section class="panel" id="revenue">
+            <div class="panel-top">
+              <h2>Revenue over time</h2>
+              <span class="muted-small">This month</span>
+            </div>
+            <div class="chart-legend">
+              <span><i class="legend-dot"></i>Revenue</span
+              ><span><i class="legend-dot faint"></i>Previous period</span>
+            </div>
+            <div
+              class="chart"
+              role="img"
+              aria-label="Illustrative revenue chart rising through the month"
+            >
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 21%"></div>
+                <div class="bar" style="--h: 32%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 28%"></div>
+                <div class="bar" style="--h: 44%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 37%"></div>
+                <div class="bar" style="--h: 55%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 32%"></div>
+                <div class="bar" style="--h: 42%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 50%"></div>
+                <div class="bar" style="--h: 68%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 47%"></div>
+                <div class="bar" style="--h: 61%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 63%"></div>
+                <div class="bar" style="--h: 82%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 57%"></div>
+                <div class="bar" style="--h: 73%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 72%"></div>
+                <div class="bar" style="--h: 91%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 66%"></div>
+                <div class="bar" style="--h: 84%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 71%"></div>
+                <div class="bar" style="--h: 96%"></div>
+              </div>
+              <div class="bar-group">
+                <div class="bar faint" style="--h: 68%"></div>
+                <div class="bar" style="--h: 87%"></div>
+              </div>
+            </div>
+            <div class="chart-labels">
+              <span>Oct 01</span><span>Oct 07</span><span>Oct 14</span
+              ><span>Oct 21</span><span>Oct 28</span>
+            </div>
+          </section>
+          <article class="art-card">
+            <img
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyODAiIGhlaWdodD0iMTcwIiB2aWV3Qm94PSIwIDAgMjgwIDE3MCI+PHJlY3Qgd2lkdGg9IjI4MCIgaGVpZ2h0PSIxNzAiIHJ4PSIxOCIgZmlsbD0iI2VmZDViYiIvPjxjaXJjbGUgY3g9IjIyMCIgY3k9IjM4IiByPSI2NSIgZmlsbD0iI2RmYTA3NyIvPjxwYXRoIGQ9Ik0yMCAxNzAgMTI1IDIwIDIyNSAxNzBaIiBmaWxsPSIjYmY3NTU0Ii8+PHBhdGggZD0ibTEyNSAyMCAyNSAxNTBIMjBaIiBmaWxsPSIjZjVlOGQ2Ii8+PHBhdGggZD0iTTE2MCAxNzAgMjI3IDYzIDI4MCAxNzBaIiBmaWxsPSIjNGY2NjU1Ii8+PGNpcmNsZSBjeD0iNjIiIGN5PSI0MiIgcj0iMTMiIGZpbGw9IiNjZTZlNDIiLz48cGF0aCBkPSJNMCAxNTBxNTUtNDIgMTA4LTEwdDE3Mi0xMHY0MEgwWiIgZmlsbD0iIzZlN2M2MCIvPjxwYXRoIGQ9Ik0wIDE2MHE5MC0zNSAxNjItOXQxMTgtOXYyOEgwWiIgZmlsbD0iIzQ1NTY0MiIvPjwvc3ZnPg=="
+              alt="An illustrated landscape with mountains and a sun"
+            />
+            <h2>Make room for what's next.</h2>
+            <p>
+              Small steps add up. Explore the tools that help your business
+              grow.
+            </p>
+            <a class="art-link" href="#customers"
+              >Explore your workspace <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+        <section class="panel customer-panel" id="customers">
+          <div class="panel-top">
+            <h2>Recent customers</h2>
+            <span class="muted-small">View all customers ↗</span>
+          </div>
+          <div class="customer-header">
+            <span>Customer</span><span>Plan</span><span>Status</span
+            ><span style="text-align: right">Revenue</span>
+          </div>
+          <div class="customer-row">
+            <div class="person">
+              <span class="person-avatar">AK</span>
+              <div>
+                <span class="person-name">Alex Kim</span
+                ><span class="person-email">alex@example.com</span>
+              </div>
+            </div>
+            <span>Studio plan</span><span class="status">Active</span
+            ><span class="amount">$1,240</span>
+          </div>
+          <div class="customer-row">
+            <div class="person">
+              <span class="person-avatar green">JD</span>
+              <div>
+                <span class="person-name">Jamie Davis</span
+                ><span class="person-email">jamie@example.com</span>
+              </div>
+            </div>
+            <span>Growth plan</span><span class="status">Active</span
+            ><span class="amount">$890</span>
+          </div>
+          <div class="customer-row">
+            <div class="person">
+              <span class="person-avatar blue">SR</span>
+              <div>
+                <span class="person-name">Sam Rivera</span
+                ><span class="person-email">sam@example.com</span>
+              </div>
+            </div>
+            <span>Studio plan</span><span class="status">Active</span
+            ><span class="amount">$680</span>
+          </div>
+        </section>
+        <div class="bottom-note" id="settings">
+          <span>All amounts shown in USD. Fictional sample data.</span
+          ><span>Last synced just now</span>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

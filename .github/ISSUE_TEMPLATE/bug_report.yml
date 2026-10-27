@@ -1,0 +1,21 @@
+name: Bug report
+description: A missed layout issue, false positive, or broken scan
+body:
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How can we reproduce it?
+      description: Include the command, profile and a minimal public HTML example. Do not include credentials, auth state, or private reports.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and observed behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: PageBend version, Node version, OS, browser channel

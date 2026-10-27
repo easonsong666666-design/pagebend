@@ -127,7 +127,11 @@ export async function scan(options = {}) {
         item.findings = compareFindings(item.before.findings, item.after.findings);
         item.after.findings = item.findings;
       } catch (error) {
-        item.error = safeError(error, target.href, options.storageState);
+        // Context setup errors can quote credential file contents or invalid
+        // cookie values. Never copy those diagnostics into a portable report.
+        item.error = !context && options.storageState
+          ? 'Could not initialize a browser context with the supplied authentication state. Re-export a valid Playwright storage state, check that its file is readable, and confirm the browser can run. Original error details are omitted to protect credentials.'
+          : safeError(error, target.href, options.storageState);
       } finally {
         await context?.close();
       }

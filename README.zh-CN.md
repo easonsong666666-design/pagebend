@@ -21,7 +21,7 @@ PageBend 用 Chromium 打开你的页面，每个场景从独立的浏览器环�
 需要 **Node.js 20 或以上**。用一条命令试跑内置页面，无需全局安装，也不需要 Git：
 
 ```sh
-npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz demo --setup --open
+npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz demo --setup --open
 ```
 
 `--setup` 会在需要时安装匹配的 Chromium，然后生成报告并打开；首次下载可能需要几分钟。已有 Chrome 时，把 `--setup` 换成 `--channel chrome` 即可跳过下载。扫描在本机运行，不需要账户或 API key，没有遥测，也不上传页面。
@@ -31,7 +31,7 @@ npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v
 经常使用时，可以安装一次：
 
 ```sh
-npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz
 pagebend http://localhost:3000 --setup --out my-app-report --open
 ```
 
@@ -74,7 +74,7 @@ pagebend demo --fixed --out pagebend-fixed-report --open
 需要在**导入 PageBend 的项目目录内**安装依赖。全局安装或临时 `npx` 运行只提供命令行入口，不能直接让项目中的 `import 'pagebend'` 生效。
 
 ```sh
-npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz
 npx --no-install pagebend install-browser
 ```
 

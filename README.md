@@ -21,6 +21,8 @@ PageBend opens your page in Chromium, applies one temporary stress condition at 
 
 See [one clipped button, the CSS repair, and the rescan](docs/repair-walkthrough.md) for a concrete walkthrough.
 
+For an existing third-party template, see [a scoped long-token experiment on Bootstrap's pricing example](docs/bootstrap-pricing-case.md), with pinned source, a reproducible script and the tradeoff of allowing a taller header. It is an artificial stress experiment, not a customer case study.
+
 ## Try it
 
 Requires **Node.js 20+**. Try the included page with one command — no global install or Git required:

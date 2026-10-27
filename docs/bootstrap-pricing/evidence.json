@@ -1,0 +1,207 @@
+{
+  "upstreamCommit": "25aa8cc0b32f0d1a54be575347e6d84b70b1acd7",
+  "scope": "header > div:first-child > a > span",
+  "profile": "unbroken",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "sources": [
+    {
+      "file": "index.astro",
+      "url": "https://raw.githubusercontent.com/twbs/bootstrap/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7/site/src/assets/examples/pricing/index.astro",
+      "sha256": "2ce4c05c85ca9da28d49ea20b0b44b2d85f4444dfb20b79f26cc69863bb89c7d"
+    },
+    {
+      "file": "pricing.css",
+      "url": "https://raw.githubusercontent.com/twbs/bootstrap/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7/site/src/assets/examples/pricing/pricing.css",
+      "sha256": "b4058af51de9c99bbf987c6f1614cf22f6b10d4d773cd4320886ab23ad2505db"
+    },
+    {
+      "file": "bootstrap.min.css",
+      "url": "https://raw.githubusercontent.com/twbs/bootstrap/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7/dist/css/bootstrap.min.css",
+      "sha256": "d85327d99c7a3ee1f9b5d0500d1370acea3ad2db39c163c2f51f232baedbdede"
+    },
+    {
+      "file": "bootstrap-logo.svg",
+      "url": "https://raw.githubusercontent.com/twbs/bootstrap/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7/site/static/docs/[version]/assets/brand/bootstrap-logo.svg",
+      "sha256": "df11d37a123e36a768f2a6064973c4c6ab17d1e3c6501c8bf434ca5c0134c9a2"
+    },
+    {
+      "file": "LICENSE",
+      "url": "https://raw.githubusercontent.com/twbs/bootstrap/25aa8cc0b32f0d1a54be575347e6d84b70b1acd7/LICENSE",
+      "sha256": "4620c84ad5ce8602ff65640ed6b7c8b78ebb9e036584f0ebc1ccc88206a4bb51"
+    }
+  ],
+  "results": [
+    {
+      "variant": "original",
+      "pagebendVersion": "0.1.2",
+      "summary": {
+        "cases": 1,
+        "newFindings": 1,
+        "existingFindings": 0,
+        "reviewCases": 1
+      },
+      "mutation": {
+        "changed": 1,
+        "details": "Appended a 56-character unbroken token; markup and input values preserved.",
+        "capped": false
+      },
+      "findings": [
+        {
+          "id": "element-overflow:html > body > div > header > div:nth-of-type(1) > a > span",
+          "kind": "element-overflow",
+          "selector": "html > body > div > header > div:nth-of-type(1) > a > span",
+          "message": "Element extends 196.1px beyond the viewport.",
+          "rect": {
+            "x": 215.4,
+            "y": 16,
+            "width": 1260.7,
+            "height": 72
+          },
+          "excessPx": 196.1,
+          "status": "new",
+          "hint": "Check this element and its parent for fixed/min widths and missing overflow-wrap or min-width: 0."
+        }
+      ],
+      "visual": {
+        "baseline": {
+          "headerHeight": 57,
+          "links": [
+            {
+              "text": "Features",
+              "left": 814.28125,
+              "right": 877.4375,
+              "insideViewport": true
+            },
+            {
+              "text": "Enterprise",
+              "left": 893.4375,
+              "right": 967.59375,
+              "insideViewport": true
+            },
+            {
+              "text": "Support",
+              "left": 983.59375,
+              "right": 1041.984375,
+              "insideViewport": true
+            },
+            {
+              "text": "Pricing",
+              "left": 1057.984375,
+              "right": 1108,
+              "insideViewport": true
+            }
+          ]
+        },
+        "stressed": {
+          "headerHeight": 89,
+          "links": [
+            {
+              "text": "Features",
+              "left": 1476.0625,
+              "right": 1539.21875,
+              "insideViewport": false
+            },
+            {
+              "text": "Enterprise",
+              "left": 1555.21875,
+              "right": 1629.375,
+              "insideViewport": false
+            },
+            {
+              "text": "Support",
+              "left": 1645.375,
+              "right": 1703.765625,
+              "insideViewport": false
+            },
+            {
+              "text": "Pricing",
+              "left": 1719.765625,
+              "right": 1769.78125,
+              "insideViewport": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "variant": "fixed",
+      "pagebendVersion": "0.1.2",
+      "summary": {
+        "cases": 1,
+        "newFindings": 0,
+        "existingFindings": 0,
+        "reviewCases": 0
+      },
+      "mutation": {
+        "changed": 1,
+        "details": "Appended a 56-character unbroken token; markup and input values preserved.",
+        "capped": false
+      },
+      "findings": [],
+      "visual": {
+        "baseline": {
+          "headerHeight": 57,
+          "links": [
+            {
+              "text": "Features",
+              "left": 814.28125,
+              "right": 877.4375,
+              "insideViewport": true
+            },
+            {
+              "text": "Enterprise",
+              "left": 893.4375,
+              "right": 967.59375,
+              "insideViewport": true
+            },
+            {
+              "text": "Support",
+              "left": 983.59375,
+              "right": 1041.984375,
+              "insideViewport": true
+            },
+            {
+              "text": "Pricing",
+              "left": 1057.984375,
+              "right": 1108,
+              "insideViewport": true
+            }
+          ]
+        },
+        "stressed": {
+          "headerHeight": 161,
+          "links": [
+            {
+              "text": "Features",
+              "left": 814.28125,
+              "right": 877.4375,
+              "insideViewport": true
+            },
+            {
+              "text": "Enterprise",
+              "left": 893.4375,
+              "right": 967.59375,
+              "insideViewport": true
+            },
+            {
+              "text": "Support",
+              "left": 983.59375,
+              "right": 1041.984375,
+              "insideViewport": true
+            },
+            {
+              "text": "Pricing",
+              "left": 1057.984375,
+              "right": 1108,
+              "insideViewport": true
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "createdAt": "2026-10-27T06:01:03.766Z"
+}

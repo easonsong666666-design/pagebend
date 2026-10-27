@@ -11,7 +11,9 @@
 [![Tests](https://github.com/easonsong666666-design/pagebend/actions/workflows/ci.yml/badge.svg)](https://github.com/easonsong666666-design/pagebend/actions/workflows/ci.yml)
 [![MIT](https://img.shields.io/badge/license-MIT-ea7549.svg)](LICENSE)
 
-![PageBend report: baseline and stressed page side by side](docs/preview.png)
+![Real PageBend run: inspect fragile layouts, then compare the repaired page](docs/demo.gif)
+
+[Watch the compact video](https://easonsong666666-design.github.io/pagebend/demo.webm) · [View a still screenshot](docs/preview.png)
 
 A neat sample name fits your card. A real customer's name does not. A translated label clips the checkout button. Increasing font size pushes a price outside its container.
 

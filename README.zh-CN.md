@@ -6,7 +6,9 @@
 
 [打开真实演示报告](https://easonsong666666-design.github.io/pagebend/) · [English](README.md) · [下载版本](https://github.com/easonsong666666-design/pagebend/releases)
 
-![PageBend 前后对照报告](docs/preview.png)
+![PageBend 实际操作：检查受压页面，再对照修复结果](docs/demo.gif)
+
+[观看体积更小的视频](https://easonsong666666-design.github.io/pagebend/demo.webm) · [查看静态截图](docs/preview.png)
 
 正常的名字能放进卡片，长一点的客户姓名却被截断；英文按钮没问题，文字变长后就溢出；用户放大字体，固定高度的容器就装不下。这些问题不一定能从一张漂亮的正常截图中发现。
 

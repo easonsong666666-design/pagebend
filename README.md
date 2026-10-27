@@ -97,6 +97,15 @@ Use `pagebend --help` for viewport, settle time, timeout and browser options. Te
 
 ### Use from JavaScript
 
+Install PageBend **inside the project that will import it**. A global or temporary `npx` installation only provides the CLI; Node does not resolve it as a project dependency.
+
+```sh
+npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npx --no-install pagebend install-browser
+```
+
+Save this as `check-layout.mjs` in that project, start your app, then run `node check-layout.mjs`:
+
 ```js
 import { scan, renderReport } from 'pagebend';
 import { writeFile } from 'node:fs/promises';

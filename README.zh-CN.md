@@ -69,6 +69,31 @@ pagebend demo --fixed --out pagebend-fixed-report --open
 
 最后一条命令运行修复过的演示页面，使用的依然是同一个检测引擎。`pagebend --help` 提供全部参数，包括认证状态文件、浏览器选择、视口与等待时间。
 
+## 在项目代码中使用
+
+需要在**导入 PageBend 的项目目录内**安装依赖。全局安装或临时 `npx` 运行只提供命令行入口，不能直接让项目中的 `import 'pagebend'` 生效。
+
+```sh
+npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npx --no-install pagebend install-browser
+```
+
+将下面的代码保存为项目内的 `check-layout.mjs`。启动自己的应用后，执行 `node check-layout.mjs`：
+
+```js
+import { scan, renderReport } from 'pagebend';
+import { writeFile } from 'node:fs/promises';
+
+const report = await scan({
+  url: 'http://localhost:3000',
+  profiles: ['long-text', 'narrow'],
+  ignore: ['.carousel'],
+});
+await writeFile('report.html', renderReport(report));
+```
+
+若要加入 GitHub Actions，参见[现有工作流接入示例](docs/ci-example.md)。应用需要先启动并就绪；扫描后即使发现候选问题，也应保留报告供复查。
+
 ## 报告如何理解
 
 检测结果是需要检查的**布局候选问题**。页面比视口宽多少像素可以测量，但一个裁切是否出于设计意图仍然需要判断。工具会排除常见的主动滚动、文字省略号和行数限制，不给出没有依据的“质量分”。

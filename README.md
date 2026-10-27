@@ -31,6 +31,8 @@ npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v
 
 `--setup` installs the matching Chromium browser if needed, then runs the scan. The first download can take a few minutes. Already have Chrome? Replace `--setup` with `--channel chrome` to skip it. The report opens in your browser; PageBend runs locally. No account, API key, telemetry or cloud service is needed to run a scan.
 
+When running through `npx`, Playwright may warn that project dependencies have not been installed. PageBend already includes the dependency it needs; this demo does not require a separate `npm install`. Let setup continue: success prints `Chromium is ready. Starting the scan.`, followed by the report path after scanning. Actual installation failures stop with `Chromium setup failed`.
+
 Replace `demo` with `http://localhost:3000` to scan your own running app; add `--out my-app-report` to keep it separate from the demo. The package currently comes from a GitHub Release, not the npm registry.
 
 For regular use, install once:

@@ -26,6 +26,8 @@ npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v
 
 `--setup` 会在需要时安装匹配的 Chromium，然后生成报告并打开；首次下载可能需要几分钟。已有 Chrome 时，把 `--setup` 换成 `--channel chrome` 即可跳过下载。扫描在本机运行，不需要账户或 API key，没有遥测，也不上传页面。
 
+通过 `npx` 试跑时，Playwright 可能提示尚未安装项目依赖。PageBend 已包含所需依赖，这个演示无需另行执行 `npm install`，可以让安装继续。安装成功后会显示 `Chromium is ready. Starting the scan.`，扫描结束后显示报告路径；如果安装确实失败，命令会停止并显示 `Chromium setup failed`。
+
 把 `demo` 换成 `http://localhost:3000` 就能检查自己的应用，加上 `--out my-app-report` 可以与演示报告分开保存。当前版本从 GitHub 发布包安装，尚未发布到 npm registry。
 
 经常使用时，可以安装一次：

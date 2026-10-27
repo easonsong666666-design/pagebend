@@ -1,6 +1,6 @@
 {
   "name": "pagebend",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Stress-test real web pages with long text, big fonts, narrow screens and missing images. Get an offline visual report.",
   "type": "module",
   "bin": {

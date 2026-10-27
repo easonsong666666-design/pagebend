@@ -26,7 +26,7 @@ See [one clipped button, the CSS repair, and the rescan](docs/repair-walkthrough
 Requires **Node.js 20+**. Try the included page with one command — no global install or Git required:
 
 ```sh
-npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz demo --setup --open
+npx --yes https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz demo --setup --open
 ```
 
 `--setup` installs the matching Chromium browser if needed, then runs the scan. The first download can take a few minutes. Already have Chrome? Replace `--setup` with `--channel chrome` to skip it. The report opens in your browser; PageBend runs locally. No account, API key, telemetry or cloud service is needed to run a scan.
@@ -36,7 +36,7 @@ Replace `demo` with `http://localhost:3000` to scan your own running app; add `-
 For regular use, install once:
 
 ```sh
-npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npm install -g https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz
 
 pagebend http://localhost:3000 --setup --out my-app-report --open
 ```
@@ -100,7 +100,7 @@ Use `pagebend --help` for viewport, settle time, timeout and browser options. Te
 Install PageBend **inside the project that will import it**. A global or temporary `npx` installation only provides the CLI; Node does not resolve it as a project dependency.
 
 ```sh
-npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.1/pagebend-0.1.1.tgz
+npm install --save-dev https://github.com/easonsong666666-design/pagebend/releases/download/v0.1.2/pagebend-0.1.2.tgz
 npx --no-install pagebend install-browser
 ```
 

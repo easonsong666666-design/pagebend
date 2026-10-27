@@ -1,6 +1,6 @@
 {
-  "version": "0.1.1",
-  "generatedAt": "2026-10-27T03:38:37.426Z",
+  "version": "0.1.2",
+  "generatedAt": "2026-10-27T05:27:05.263Z",
   "browser": "Playwright Chromium",
   "demo": {
     "synthetic": true,
@@ -12,7 +12,7 @@
     "existingFindings": 0,
     "reviewCases": 6
   },
-  "durationMs": 9748,
+  "durationMs": 6713,
   "scenarios": [
     {
       "id": "long-text",

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Prevent authentication state initialization errors from including credential file contents or invalid cookie values in HTML/JSON reports and JavaScript progress events. Use a fixed recovery message instead; retain normal navigation diagnostics after a context is successfully created.
+- Cover malformed authentication files and invalid state objects with browser-backed API and CLI regression tests. Failed scans still save a report and return exit code 2.
+
 ## 0.1.1
 
 - Capture content below the viewport up to the documented 12,000px limit; screenshot pixels now match the dimensions used for report overlays.

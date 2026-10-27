@@ -55,6 +55,29 @@ test('existing output is preserved unless explicitly replaced', async () => {
   } finally { await rm(dir, { recursive: true, force: true }); }
 });
 
+test('invalid authentication files produce safe saved reports and exit 2', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'pagebend-auth-error-'));
+  try {
+    const marker = 'FAKE_AUTH_TOKEN_6241';
+    const state = join(dir, 'PRIVATE_AUTH_FILE_6241.json');
+    const output = join(dir, 'report');
+    await writeFile(state, marker);
+    const messages = [];
+    const code = await main(['demo', '--profiles', 'long-text', '--storage-state', state,
+      '--out', output, '--channel', process.env.PAGEBEND_TEST_CHANNEL || 'chromium'], {
+      out: value => messages.push(value), error: value => messages.push(value)
+    });
+    assert.equal(code, 2);
+    const json = await readFile(join(output, 'report.json'), 'utf8');
+    const html = await readFile(join(output, 'report.html'), 'utf8');
+    assert.ok(JSON.parse(json).cases[0].error);
+    for (const content of [json, html, messages.join('\n')]) {
+      assert.ok(!content.includes(marker), 'a malformed auth file must not leak into saved reports or terminal output');
+      assert.ok(!content.includes('PRIVATE_AUTH_FILE_6241'));
+    }
+  } finally { await rm(dir, { recursive: true, force: true }); }
+});
+
 test('setup is explicit and cannot be mixed with a different browser selection', () => {
   assert.equal(parseOptions(['demo']).setup, false);
   assert.equal(parseOptions(['demo', '--setup']).setup, true);

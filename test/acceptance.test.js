@@ -206,9 +206,32 @@ test('explicit authentication state opens an authenticated page without embeddin
   const serialized = JSON.stringify(authorized);
   assert.ok(!serialized.includes('SYNTHETIC_COOKIE_6241'));
   assert.ok(!serialized.includes('PRIVATE_AUTH_STATE_PATH_6241'));
+  const missingPage = await inspect('not-found', { storageState: statePath });
+  assert.match(missingPage.cases[0].error, /404/, 'valid authentication must not hide later navigation failures');
   const broken = await inspect('authenticated', { storageState: `${statePath}.missing` });
   assert.ok(broken.cases[0].error);
   assert.ok(!JSON.stringify(broken).includes('PRIVATE_AUTH_STATE_PATH_6241'));
+});
+
+test('invalid authentication state never exposes its contents in reports or progress events', async () => {
+  const { renderReport } = await import('../src/report.js');
+  const marker = 'FAKE_AUTH_TOKEN_6241';
+  const statePath = join(temporary, 'PRIVATE_INVALID_AUTH_STATE_6241.json');
+  await writeFile(statePath, marker);
+  const invalidObject = { cookies: [{
+    name: 'fixture_session', value: marker, domain: '127.0.0.1', path: '/', expires: marker
+  }], origins: [] };
+  for (const storageState of [statePath, invalidObject]) {
+    const progress = [];
+    const report = await inspect('authenticated', { storageState, onProgress: event => progress.push(event) });
+    assert.ok(report.cases[0].error, 'invalid credentials must produce a failed scenario');
+    assert.equal(report.summary.reviewCases, 1);
+    for (const output of [JSON.stringify(report), renderReport(report), JSON.stringify(progress)]) {
+      assert.ok(!output.includes(marker), 'authentication contents must not escape through error messages');
+      assert.ok(!output.includes('PRIVATE_INVALID_AUTH_STATE_6241'), 'the authentication path must stay private');
+    }
+    assert.match(report.cases[0].error, /authentication state|storage state/i);
+  }
 });
 
 test('an exported HTML report works from file:// without outbound requests or HTML injection', async () => {
